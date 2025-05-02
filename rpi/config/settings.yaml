@@ -1,0 +1,13 @@
+device:
+  mac_address: "B8:27:EB:45:12:34"
+  location: "Living Room"
+
+mqtt:
+  broker: "192.168.1.100"
+  port: 1883
+  topic_publish: "smartlight/events"
+  topic_subscribe: "smartlight/control"
+
+camera:
+  video_duration: 15
+  upload_endpoint: "http://192.168.1.100:5000/api/upload-video"

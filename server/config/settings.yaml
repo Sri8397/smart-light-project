@@ -1,0 +1,15 @@
+mqtt:
+  broker: "localhost"
+  port: 1883
+  topic_subscribe: "smartlight/events"
+  topic_control: "smartlight/control"
+
+server:
+  host: "0.0.0.0"
+  port: 5000
+
+video_storage: "static/videos"
+
+mongodb:
+  uri: "mongodb://localhost:27017"
+  db: "smartlight"
