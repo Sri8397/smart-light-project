@@ -1,7 +1,3 @@
-Certainly! Here’s a **README.md** tailored for your Smart Light Project, covering setup, usage, video upload, MQTT, and API details.
-
----
-
 # Smart Light Project
 
 A smart light control system using FastAPI and MQTT, with support for video uploads from Raspberry Pi devices and real-time event tracking.
