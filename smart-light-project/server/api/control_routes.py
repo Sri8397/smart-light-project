@@ -1,10 +1,8 @@
-from fastapi import APIRouter, UploadFile, File, Form, HTTPException
+from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Request
 from core.mqtt_client import mqtt_client
-from services.video_service import save_uploaded_video
-from database.models import save_motion_event
 from fastapi.responses import JSONResponse
 from core.state_manager import state
-from database.db_connector import db, video_metadata_collection, motion_logs_collection, devices_collection
+from database.db_connector import db, video_metadata_collection, motion_logs_collection, devices_collection, led_status_collection
 from bson.json_util import dumps
 from pathlib import Path
 import os
@@ -71,23 +69,40 @@ async def get_logs():
 @router.get("/devices")
 async def get_devices():
     try:
-        devices = list(db.devices.find())
-        return {"devices": devices}
+        devices = list(devices_collection.find())
+        seriealized_devices = []
+        for device in devices:
+            device["_id"] = str(device["_id"])
+            seriealized_devices.append(device)
+        return seriealized_devices
     except Exception as e:
         return JSONResponse(status_code=500, content={"message": f"Failed to retrieve devices: {str(e)}"})
 
 # POST /api/control - Send control command to RPi (e.g., turn on/off light)
 @router.post("/control")
-async def control_device(data: dict):
+async def control_device(request: Request):
     try:
-        # Expected data: {"mac": "<mac_address>", "state": "on" or "off"}
-        mac_address = data.get("mac")
-        state = data.get("state")
-        
-        if mac_address and state:
-            mqtt_client.publish_event("light_control", {"mac_address": mac_address, "state": state})
-            return {"status": "success", "mac_address": mac_address, "state": state}
-        else:
-            return JSONResponse(status_code=400, content={"message": "Invalid data"})
+        data = await request.json()
+        print(f"Received control request: {data}")
+        mac = data.get("mac")
+        action = data.get("action")
+        print(f"MAC: {mac}, Action: {action}")
+
+        if not mac or action not in ["on", "off"]:
+            raise HTTPException(status_code=400, detail="Missing or invalid 'mac' or 'action'.")
+
+        mqtt_client.publish_event("light_control", {
+            "mac": mac,
+            "action": action
+        })
+
+        led_status_collection.insert_one({
+            "mac": mac,
+            "action": action,
+            "timestamp": datetime.utcnow().isoformat()
+        })
+
+        return {"status": "success", "message": f"Sent '{action}' command to device {mac}"}
+
     except Exception as e:
-        return JSONResponse(status_code=500, content={"message": f"Failed to send control command: {str(e)}"})
+        raise HTTPException(status_code=500, detail=f"Error sending control message: {e}")

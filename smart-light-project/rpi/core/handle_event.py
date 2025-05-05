@@ -3,6 +3,9 @@ import json
 import requests
 from pathlib import Path
 from core.state_manager import state
+from gpiozero import LED
+
+led = LED(22)
 
 VIDEO_DIR = Path(__file__).parent.parent / "videos"
 VIDEO_DIR.mkdir(parents=True, exist_ok=True)
@@ -11,13 +14,16 @@ def handle_event(payload):
     try:
         data = json.loads(payload)
         event = data.get("event")
-
+        print(f"[Event] Received event: {event}")
         if event == "video_upload_request":
             handle_upload_request(data)
         elif event == "video_upload_ack":
             handle_acknowledgment(data)
+        elif event == "light_control":
+            handle_light_control(data)
         else:
             print(f"[Event] Unknown event: {event}")
+
     except Exception as e:
         print(f"[Event] Error: {e}")
 
@@ -72,3 +78,24 @@ def handle_acknowledgment(data):
             print(f"[Delete] Server did not acknowledge upload success for {filename}")
     except Exception as e:
         print(f"[Delete] Error while processing acknowledgment: {e}")
+
+def handle_light_control(data):
+    try:
+        requested_mac = data.get("mac")
+        device_mac = state.get_config()["device"]["mac_address"]
+
+        if requested_mac != device_mac:
+            return  # Ignore if the message isn't for this device
+
+        action = data.get("action")
+        if action == "on":
+            led.on()
+            print("[Light] LED turned ON")
+        elif action == "off":
+            led.off()
+            print("[Light] LED turned OFF")
+        else:
+            print(f"[Light] Unknown action: {action}")
+
+    except Exception as e:
+        print(f"[Light] Error: {e}")

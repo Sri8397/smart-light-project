@@ -17,3 +17,4 @@ db:
   motion_logs_collection: "motion_logs"
   devices_collection: "devices"
   video_metadata_collection: "video_metadata"
+  led_status_collection: "led_status"

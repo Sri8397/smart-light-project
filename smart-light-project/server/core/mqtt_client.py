@@ -2,7 +2,7 @@ import paho.mqtt.client as mqtt
 import json
 from datetime import datetime
 from core.state_manager import state
-from database.db_connector import video_metadata_collection, motion_logs_collection
+from database.db_connector import video_metadata_collection, motion_logs_collection, devices_collection
 
 config = state.get_config()["mqtt"]
 
@@ -20,10 +20,19 @@ class MQTTClient:
     def on_message(self, client, userdata, msg):
         print(f"[MQTT] Received: {msg.payload.decode()}")
         print(f"[MQTT] Topic: {config['topic_subscribe']}")
+
         if msg.topic == config["topic_subscribe"]:
             try:
                 payload = json.loads(msg.payload.decode())
                 event_type = payload.get("event")
+                mac = payload.get("mac_address")
+                
+                # find the mac address in the database
+                mac_present = devices_collection.find_one({"mac_address": mac})
+                if not mac_present:
+                    devices_collection.insert_one({"mac_address": mac})
+                    print(f"[DB] New device detected: {mac}")
+                
                 if event_type == "motion_detected":
                     motion_logs_collection.insert_one(payload)
                     print("[DB] Saving motion log.")
@@ -52,9 +61,9 @@ class MQTTClient:
         }
         if extra_data:
             payload.update(extra_data)
-
+        print(f"[MQTT] Publishing event: {event_type} with payload: {payload}")
+        print(f"[MQTT] Topic: {config['topic_publish']}")
         self.client.publish(config["topic_publish"], json.dumps(payload))
-        print(f"[MQTT] Published event: {event_type}")
 
     def loop_start(self):
         self.client.loop_start()

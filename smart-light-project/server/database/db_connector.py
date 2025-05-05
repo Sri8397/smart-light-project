@@ -14,6 +14,7 @@ db = client[database_name]
 motion_logs_collection = db[db_config["motion_logs_collection"]]
 devices_collection = db[db_config["devices_collection"]]
 video_metadata_collection = db[db_config["video_metadata_collection"]]
+led_status_collection = db[db_config["led_status_collection"]]
 
 # video_metadata_collection.update_many(
 #     {"location": {"$exists": False}},

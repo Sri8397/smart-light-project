@@ -3,3 +3,4 @@ uvicorn
 paho-mqtt
 pymongo
 pyyaml
+python-multipart

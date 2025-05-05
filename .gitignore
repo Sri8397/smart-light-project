@@ -8,3 +8,4 @@ __pycache__/
 *.log
 .lgd-nfy0
 .DS_Store
+.test
