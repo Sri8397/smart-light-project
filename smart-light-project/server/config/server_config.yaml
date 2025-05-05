@@ -1,5 +1,6 @@
 mqtt:
-  broker: "raspberrypi.local"
+  # broker: "raspberrypi.local"
+  broker: "localhost"
   port: 1883
   topic_subscribe: "smartlight/events"
   topic_publish: "smartlight/control"
