@@ -5,27 +5,25 @@
 ## 📟 Raspberry Pi (Device) Setup
 
 1. Install dependencies:
-   python3 -m venv --system-site-packages venv
-   source venv/bin/activate
-   pip install -r requirements.txt
+   $ python3 -m venv --system-site-packages venv && source venv/bin/activate && pip install -r requirements.txt
 
 2. Configure `config/settings.yaml` with your device and broker details.
 
 3. Run the project:
-   python main.py
+   $ python main.py
 
-4. Ensure PIR is connected to GPIO4 and camera is enabled:
-   sudo raspi-config
-   # Interface Options > Camera > Enable
+4. Enable the camera and connect the PIR sensor to GPIO4:
+   $ sudo raspi-config
+   (Go to: Interface Options > Camera > Enable)
 
 5. Video files are uploaded and deleted upon server acknowledgment.
 
-6. Set up as a system service to run automatically on boot:
+6. Set up the system to auto-run on boot using systemd:
 
-   a. Create a systemd service:
-      sudo nano /etc/systemd/system/smartlight.service
+   a. Create a service file:
+      $ sudo nano /etc/systemd/system/smartlight.service
 
-   b. Paste the following (update paths accordingly):
+   b. Paste the following content (update paths if needed):
 
       [Unit]
       Description=Smart Light System
@@ -42,30 +40,27 @@
       WantedBy=multi-user.target
 
    c. Enable and start the service:
-      sudo systemctl daemon-reexec
-      sudo systemctl daemon-reload
-      sudo systemctl enable smartlight.service
-      sudo systemctl start smartlight.service
+      $ sudo systemctl daemon-reexec && sudo systemctl daemon-reload
+      $ sudo systemctl enable smartlight.service
+      $ sudo systemctl start smartlight.service
 
    d. Check service status or logs:
-      sudo systemctl status smartlight.service
-      journalctl -u smartlight.service -e
+      $ sudo systemctl status smartlight.service
+      $ journalctl -u smartlight.service -e
 
 ---
 
 ## 🖥️ Server Setup
 
 1. Create and activate a virtual environment:
-   python3 -m venv venv
-   source venv/bin/activate
-   pip install -r requirements.txt
+   $ python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt
 
 2. Set up MongoDB (local or remote), and configure `config/settings.yaml` with:
    - DB URI and collection names
    - MQTT broker settings
 
 3. Run the server:
-   python main.py
+   $ python main.py
 
 4. Available API Endpoints:
 
@@ -83,4 +78,4 @@
 
 ---
 
-✅ Make sure both the Pi and server have matching MQTT topics and device MAC configurations.
+✅ Ensure both Raspberry Pi and server use matching MQTT topics and device MAC configurations.
