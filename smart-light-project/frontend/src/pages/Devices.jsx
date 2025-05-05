@@ -35,13 +35,13 @@ const Devices = () => {
 
     return (
         <div className="p-4">
-            <h1 className="text-xl font-bold mb-4 text-center">Connected Devices</h1>
+            <h1 className="text-xl font-bold mb-4">Connected Devices</h1>
             <table className="min-w-full table-auto border border-gray-300">
                 <thead className="bg-gray-200">
                     <tr>
                         <th className="p-2 border">#</th>
                         <th className="p-2 border">MAC Address</th>
-                        <th className="p-2 border">Control</th>
+                        <th className="p-2 border">Control LED</th>
                     </tr>
                 </thead>
                 <tbody>

@@ -56,11 +56,32 @@ async def upload_video(
 @router.get("/logs")
 async def get_logs():
     try:
-        logs = list(motion_logs_collection.find())
+        motion_logs = list(motion_logs_collection.find())
+        led_logs = list(led_status_collection.find())
+        video_logs = list(video_metadata_collection.find())
         serialized_logs = []
-        for log in logs:
+
+        for log in motion_logs:
             log["_id"] = str(log["_id"])
             serialized_logs.append(log)
+        # temporary solution 
+        for log in led_logs:
+            converted_log = {
+                "_id": str(log.get("_id")),
+                "mac_address": log.get("mac_address"),
+                "event": log.get("event"),
+                "timestamp": log.get("timestamp")
+            }
+            serialized_logs.append(converted_log)
+        for log in video_logs:
+            converted_log = {
+                "_id":  str(log.get("_id")),
+                "mac_address": log.get("mac_address"),
+                "event": log.get("event"),
+                "timestamp": log.get("timestamp")
+            }
+            serialized_logs.append(converted_log)
+
         return serialized_logs
     except Exception as e:
         return JSONResponse(status_code=500, content={"message": f"Failed to retrieve logs: {str(e)}"})
@@ -92,8 +113,9 @@ async def control_device(request: Request):
             raise HTTPException(status_code=400, detail="Missing or invalid 'mac' or 'action'.")
 
         mqtt_client.publish_event("light_control", {
-            "mac": mac,
-            "action": action
+            "mac_address": mac,
+            "action": action,
+            "event": "light_control"
         })
 
         led_status_collection.insert_one({

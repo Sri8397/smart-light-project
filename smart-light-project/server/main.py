@@ -2,7 +2,6 @@ from core.mqtt_client import mqtt_client
 from api.control_routes import router as control_router
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from core.video_transfer import VideoTransfer
 import uvicorn
 
 app = FastAPI()

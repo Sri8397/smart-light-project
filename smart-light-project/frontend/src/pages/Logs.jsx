@@ -8,7 +8,8 @@ const Logs = () => {
     useEffect(() => {
         fetch("http://localhost:8000/logs")
             .then((res) => res.json())
-            .then((data) => setLogs(data.reverse()));
+            // sort the logs by timestamp in descending order
+            .then((data) => setLogs(data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))))
     }, []);
 
     // Calculate the logs to display on the current page
