@@ -1,13 +1,14 @@
 device:
-  mac_address: "B8:27:EB:45:12:34"
+  mac_address: "e4:5f:1:43:3e:7c"
   location: "Living Room"
 
 mqtt:
-  broker: "192.168.1.100"
+  # broker: "test.mosquitto.org"
+  broker: "0.0.0.0"
   port: 1883
   topic_publish: "smartlight/events"
   topic_subscribe: "smartlight/control"
 
 camera:
   video_duration: 15
-  upload_endpoint: "http://192.168.1.100:5000/api/upload-video"
+  upload_endpoint: "http://172.20.10.2:8000/upload_video"

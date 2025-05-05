@@ -1,0 +1,19 @@
+mqtt:
+  broker: "raspberrypi.local"
+  port: 1883
+  topic_subscribe: "smartlight/events"
+  topic_publish: "smartlight/control"
+  mac_address: "82:73:c6:80:cb:c3"
+
+server:
+  video_upload_path: "./static/videos"
+  log_collection: "motion_logs"
+  devices_collection: "devices"
+  video_metadata_collection: "video_metadata"
+
+db:
+  uri: "mongodb://localhost:27017"
+  database_name: "smart_light_server"
+  motion_logs_collection: "motion_logs"
+  devices_collection: "devices"
+  video_metadata_collection: "video_metadata"
