@@ -1,4 +1,4 @@
-````txt
+
 # Smart Light System - Setup Guide
 
 ---
@@ -11,7 +11,7 @@
    python3 -m venv --system-site-packages venv
    source venv/bin/activate
    pip install -r requirements.txt
-````
+   ```
 
 2. Configure `config/settings.yaml` with your device and broker details.
 
