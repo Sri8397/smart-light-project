@@ -1,0 +1,5 @@
+paho-mqtt
+gpiozero
+picamera2
+# PyYAML
+# requests
